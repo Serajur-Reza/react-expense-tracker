@@ -1,0 +1,29 @@
+.stats{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.totalBalance, .totalIncome, .totalExpense, .totalSavings{
+    border-radius: 10px;
+}
+
+.totalBalance{
+    background-color: rgb(205, 253, 253);
+    padding: 20px;
+}
+
+.totalIncome{
+    background-color: rgb(212, 240, 171);
+    padding: 20px;
+}
+
+.totalExpense{
+    background-color: rgb(224, 176, 176);
+    padding: 20px;
+}
+
+.totalSavings{
+    background-color: rgba(235, 176, 50, 0.959);
+    padding: 20px;
+}
