@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { setHistory, setSavings } from '../../store/Tracker';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { toast } from 'react-toastify';
 
 const AddSavings = () => {
 
@@ -47,6 +48,17 @@ const AddSavings = () => {
     dispatch(setHistory(tempHistory))
     dispatch(setSavings(tempSavings))
     handleOpenModal()
+
+    toast.success('Savings added', {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   }
 
   
@@ -98,9 +110,11 @@ const AddSavings = () => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={addHistory}>Save</Button>
-          <Button onClick={handleOpenModal}>Cancel</Button>
+          <Button onClick={addHistory} variant="outlined">Save</Button>
+          <Button onClick={handleOpenModal} variant="outlined">Cancel</Button>
         </DialogActions>
+
+        
       </Dialog>
     </div>
   )

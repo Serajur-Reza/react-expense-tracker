@@ -82,7 +82,7 @@ const History = () => {
             <div className={ `dataDiv ${item.type === 'income'? 'income': item.type === 'expense'? 'expense' : 'savings'}`} key={index}>
               <h2>{item.type}</h2>
               <h3>{item.title}</h3>
-              <h3>{parseFloat(item.amount)} {(currency)}</h3>
+              <h3>{parseFloat(item.amount) * exchangeRate} {(currency)}</h3>
               <h5>TimeStamp: {item.timeAdded}</h5>
               <h5>Category: {item.category}</h5>
 

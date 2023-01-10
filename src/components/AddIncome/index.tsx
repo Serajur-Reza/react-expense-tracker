@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const AddIncome = () => {
   const dispatch = useDispatch();
@@ -58,6 +60,17 @@ const AddIncome = () => {
     //   text: '',
     //   amount: ''
     // })
+
+    toast.success('Income added', {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   }
 
   
@@ -110,10 +123,24 @@ const AddIncome = () => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={addHistory}>Save</Button>
-          <Button onClick={handleOpenModal}>Cancel</Button>
+          <Button onClick={addHistory} variant="outlined">Save</Button>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          <Button onClick={handleOpenModal} variant="outlined">Cancel</Button>
         </DialogActions>
       </Dialog>
+
+
     </div>
   )
 }

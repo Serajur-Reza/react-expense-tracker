@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { toast } from 'react-toastify';
 
 const AddExpense = () => {
 
@@ -50,6 +51,17 @@ const AddExpense = () => {
     dispatch(setExpense(tempExpense))
     dispatch(setBalance(tempBalance))
     handleOpenModal()
+
+    toast.success('Expense added', {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   }
 
   
@@ -101,8 +113,8 @@ const AddExpense = () => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={addHistory}>Save</Button>
-          <Button onClick={handleOpenModal}>Cancel</Button>
+          <Button onClick={addHistory} variant="outlined">Save</Button>
+          <Button onClick={handleOpenModal} variant="outlined">Cancel</Button>
         </DialogActions>
       </Dialog>
     </div>
