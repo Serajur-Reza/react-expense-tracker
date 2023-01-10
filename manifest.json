@@ -3,13 +3,13 @@
     
     "icons": [
         {
-            "src": "/images/logo.png",
+            "src": "./images/logo.png",
             "type": "image/png",
             "sizes": "512x512",
             "purpose": "any maskable"
         },
         {
-            "src": "/images/bg.png",
+            "src": "./images/bg.png",
             "type": "image/png",
             "sizes": "512x512",
             "purpose": "any maskable"
