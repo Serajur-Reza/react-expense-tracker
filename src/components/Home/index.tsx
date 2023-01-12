@@ -2,28 +2,25 @@ import React, {useCallback, useEffect, useState} from 'react'
 import './style.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormControl, Grid, InputLabel, Select, MenuItem } from '@mui/material'
-import { setBalance, setExpense, setIncome } from '../../store/Tracker'
+import { setCurrency, setExchangeDate, setExchangeRates } from '../../store/Tracker'
 import { useLazyGetCurrencyConversionRateQuery } from '../../store/api'
 import Stats from '../Stats'
 import AddIncome from '../AddIncome'
 import AddExpense from '../AddExpense'
 import AddSavings from '../AddSavings'
 import History from '../History';
+import dayjs from 'dayjs'
 
 const Home = () => {
 
   const state = useSelector((state: any) => state)
+  console.log("state=========:", state)
   
   const history = useSelector((state: any) => state.persistedReducer.history)
-  console.log("state:", state)
   const dispatch = useDispatch()
 
-
-
-  const currencyState = useSelector((state: any)=> state.persistedReducer.currency)
-  const exchangeRate = useSelector((state: any)=> state.persistedReducer.exchange)
-  
-  const [previousCurrency, setPreviousCurrency] = useState("BDT")
+  const exchangeRates = useSelector((state: any)=> state.persistedReducer.exchangeRates)
+  const exchangeDate = useSelector((state: any)=> state.persistedReducer.exchangeDate)
   const [currentCurrency, setCurrentCurrency] = useState("BDT")
 
   const calculate = useCallback(() => {
@@ -31,56 +28,53 @@ const Home = () => {
           const incomeData = history.filter((item: any)=> item.type === 'income')
           const expenseData = history.filter((item: any)=> item.type === 'expense')
 
-          console.log("History:", history)
-
-          // console.log("allIncome: ", incomeData)
-          // console.log("allExpense: ", expenseData)
-
           let allIncome = 0, allExpense = 0 , tempBalance = 0 ;
           if(incomeData && incomeData.length){
-            // allIncome = incomeData.reduce((a: any, b: any)=> (parseInt(a.amount) + parseInt(b.amount)) * exchangeRate);
             for(let i = 0 ; i< incomeData.length; i++){
-              allIncome = ((parseFloat(allIncome.toFixed(0)) + parseFloat(incomeData[i].amount)) * exchangeRate) ;
+              allIncome = (parseFloat(allIncome.toFixed(0)) + (parseFloat(incomeData[i].amount)/exchangeRates[currentCurrency])) ;
             }
-            console.log("allIncome: ", allIncome)
           }
 
           if(expenseData && expenseData.length){
-            for(let i = 0 ; i< expenseData.length; i++){
-              allExpense = ((parseFloat(allExpense.toFixed(0)) + parseFloat(expenseData[i].amount)) * exchangeRate) ;
+            for(let i = 0 ; i< expenseData.length; i++){              
+              allExpense = (parseFloat(allExpense.toFixed(0)) + (parseFloat(expenseData[i].amount)/exchangeRates?.currentCurrency)) ;
             }
-            console.log("allExpense: ", allExpense)
           }
           tempBalance = allIncome - allExpense
-  
-          dispatch(setIncome(allIncome));
-          dispatch(setExpense(allExpense))
-          dispatch(setBalance(tempBalance))
       }        
   },[dispatch])
-  const [trigger, result, lastPromiseInfo] = useLazyGetCurrencyConversionRateQuery();
+  const [trigger, result] = useLazyGetCurrencyConversionRateQuery();
   
   
   const handleChange = async (e: any) => {
-    setPreviousCurrency(currentCurrency)
     setCurrentCurrency(e.target.value)
   }
 
   useEffect(()=>{
+      const date = dayjs();
+      const lastDate = dayjs(exchangeDate).format('YYYY-MM-DD')
+      if(date.diff(lastDate, 'day')){
+        console.log("triggerd")
+        trigger(["USD", "EUR"])
+        dispatch(setExchangeDate(date))
+      }
       calculate();
   },[calculate])
 
   useEffect( ()=> {
-    trigger([previousCurrency, currentCurrency])
+    dispatch(setCurrency(currentCurrency))
+    //trigger(["USD", "EUR"])
   },[currentCurrency])
 
-  // useEffect(()=>{
-  //   if(result && result?.status === "fulfilled"){
-  //     console.log('Response========================>>>',result.data.rates[previousCurrency])
-  //     dispatch(setExchange(result.data.rates[previousCurrency]))
-  //     dispatch(setCurrency(currentCurrency))
-  //   }
-  // },[result])
+  useEffect(()=>{
+    if(result && result?.status === "fulfilled"){
+      const obj = {
+        ...result.data.rates,
+        "BDT": 1
+      }
+      dispatch(setExchangeRates(obj))
+    }
+  },[result])
 
   return (
       <div className='body'>

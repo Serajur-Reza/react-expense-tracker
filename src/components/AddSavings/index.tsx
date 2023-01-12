@@ -13,7 +13,7 @@ const AddSavings = () => {
   const dispatch = useDispatch();
   const history = useSelector((state: any)=> state.persistedReducer.history)
   // const expense = useSelector((state: any)=> state.persistedReducer.expense)
-  const exchangeRate = useSelector((state: any)=> state.persistedReducer.exchange)
+  const exchangeRates = useSelector((state: any)=> state.persistedReducer.exchangeRates)
   const currency = useSelector((state: any)=> state.persistedReducer.currency)
   const balance = useSelector((state: any)=> state.persistedReducer.balance)
   const savings = useSelector((state: any)=> state.persistedReducer.savings)
@@ -38,11 +38,18 @@ const AddSavings = () => {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
-    setFormData({ ...formData, [e.target.name]: e.target.value})
+    if(e.target.name === 'amount'){
+      const amount = (parseFloat(e.target.value) / exchangeRates[currency]).toFixed(2)
+      setFormData({ ...formData, [e.target.name]: amount})
+    }
+    else{
+      setFormData({ ...formData, [e.target.name]: e.target.value})
+    }
   }
 
   const addHistory = () =>{
-    setFormData({ ...formData})
+    // const amount = (parseFloat(formData.amount) / exchangeRates[currency]).toFixed(2)
+    // setFormData({ ...formData, amount: amount})
     const tempHistory = [...history, formData];
     const tempSavings = (parseFloat(savings) + parseFloat(formData.amount))
     dispatch(setHistory(tempHistory))

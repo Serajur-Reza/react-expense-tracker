@@ -8,7 +8,9 @@ const initialState = {
     savings: 0,
     history: [],
     currency: "BDT",
-    exchange: 1,
+    exchangeRates: {'USD': 0.009516, 'EUR':0.008855, 'BDT': 1},
+    exchangeDate: dayjs(),
+    exchangeBase: "BDT"
     // category: ["Salary", ""]
     //conversion: 1
 }
@@ -35,11 +37,17 @@ export const TrackerSlice = createSlice({
         setCurrency: (state, action) => {
             return { ...state, currency: action.payload}
         },
-        setExchange: (state, action) => {
-            return { ...state, exchange: action.payload}
+        // setExchange: (state, action) => {
+        //     return { ...state, exchange: action.payload}
+        // }
+        setExchangeDate: (state, action) => {
+            return { ...state, exchangeDate: action.payload}
+        },
+        setExchangeRates: (state, action) => {
+            return { ...state, exchangeRates: action.payload}
         }
     }
 })
 
-export const { setBalance, setIncome, setExpense, setSavings, setHistory, setCurrency, setExchange } = TrackerSlice.actions
+export const { setBalance, setIncome, setExpense, setSavings, setHistory, setCurrency, setExchangeDate, setExchangeRates } = TrackerSlice.actions
 export default TrackerSlice.reducer

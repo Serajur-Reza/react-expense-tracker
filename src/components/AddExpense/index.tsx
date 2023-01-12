@@ -14,7 +14,7 @@ const AddExpense = () => {
   const history = useSelector((state: any)=> state.persistedReducer.history)
   const expense = useSelector((state: any)=> state.persistedReducer.expense)
   const balance = useSelector((state: any)=> state.persistedReducer.balance)
-  const exchangeRate = useSelector((state: any)=> state.persistedReducer.exchange)
+  const exchangeRates = useSelector((state: any)=> state.persistedReducer.exchangeRates)
   const currency = useSelector((state: any)=> state.persistedReducer.currency)
   const [dateTime, setDateTime] = useState(dayjs().format('ddd, MMMM D, YYYY h:mm A'))
   const [openModal, setOpenModal] = useState(false)
@@ -37,12 +37,19 @@ const AddExpense = () => {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
-    setFormData({ ...formData, [e.target.name]: e.target.value})
+    if(e.target.name === 'amount'){
+      const amount = (parseFloat(e.target.value) / exchangeRates[currency]).toFixed(2)
+      setFormData({ ...formData, [e.target.name]: amount})
+    }
+    else{
+      setFormData({ ...formData, [e.target.name]: e.target.value})
+    }
   }
 
   const addHistory = () =>{
     console.log("FormData:", formData)
-    setFormData({ ...formData})
+    // const amount = (parseFloat(formData.amount) / exchangeRates[currency]).toFixed(2)
+    // setFormData({ ...formData, amount: amount})
     
     const tempHistory = [...history, formData];
     const tempExpense = (parseFloat(expense) + parseFloat(formData.amount))

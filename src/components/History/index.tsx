@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import "./styles.scss"
 import { FormControl, InputLabel, FilledInput, Button, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions, TextField } from '@mui/material'
-import { setExchange, setHistory } from '../../store/Tracker'
 
 const History = () => {
 
   const dispatch = useDispatch()
   const history = useSelector((state: any)=> state.persistedReducer.history)
   const currency = useSelector((state: any)=> state.persistedReducer.currency)
-  const exchangeRate = useSelector((state: any)=> state.persistedReducer.exchange)
+  const exchangeRates = useSelector((state: any)=> state.persistedReducer.exchangeRates)
 
   const [searchTerm, setSearchTerm] = useState('')
   const [stats, setStats] = useState(history)
@@ -40,27 +39,27 @@ const History = () => {
     }
   },[history, searchTerm])
 
-  useEffect(()=>{
-    const tempHistory = [];
+  // useEffect(()=>{
+  //   const tempHistory = [];
 
-    for(let i = 0; i < history.length; i++){
-      // if(history[i].currency !== currency){
-      //   let amount = history[i].amount / exchangeRate
-      //   tempHistory.push({...history[i], amount: amount})
-      // }
-      // else{
-      //   tempHistory.push(history[i])
-      // }
+  //   for(let i = 0; i < history.length; i++){
+  //     // if(history[i].currency !== currency){
+  //     //   let amount = history[i].amount / exchangeRate
+  //     //   tempHistory.push({...history[i], amount: amount})
+  //     // }
+  //     // else{
+  //     //   tempHistory.push(history[i])
+  //     // }
 
-      let amount = history[i].amount / exchangeRate
-      tempHistory.push({...history[i], amount: amount})
-    }
+  //     let amount = history[i].amount / exchangeRate
+  //     tempHistory.push({...history[i], amount: amount})
+  //   }
 
-    console.log("tempHistory:", tempHistory)
+  //   console.log("tempHistory:", tempHistory)
 
-    dispatch(setHistory(tempHistory))
-    setStats(tempHistory)
-  },[exchangeRate])
+  //   dispatch(setHistory(tempHistory))
+  //   setStats(tempHistory)
+  // },[exchangeRate])
 
   // useEffect(()=>{
   //   dispatch()
@@ -70,7 +69,7 @@ const History = () => {
 
   return (
     <div>
-      {/* <h1>History</h1> */}
+      <h1>History</h1>
 
       <FormControl onChange = {handleChange} fullWidth variant='filled'>
           <InputLabel>Text</InputLabel>
@@ -82,7 +81,7 @@ const History = () => {
             <div className={ `dataDiv ${item.type === 'income'? 'income': item.type === 'expense'? 'expense' : 'savings'}`} key={index}>
               <h2>{item.type}</h2>
               <h3>{item.title}</h3>
-              <h3>{parseFloat(item.amount) * exchangeRate} {(currency)}</h3>
+              <h3>{(parseFloat(item.amount) * exchangeRates[currency]).toFixed(2)} {(currency)}</h3>
               <h5>TimeStamp: {item.timeAdded}</h5>
               <h5>Category: {item.category}</h5>
 
