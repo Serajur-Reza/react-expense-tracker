@@ -4,8 +4,14 @@
     justify-content: space-evenly;
 }
 
+.cards{
+    cursor: pointer;
+}
+
 .totalBalance, .totalIncome, .totalExpense, .totalSavings{
     border-radius: 10px;
+    cursor: pointer;
+    color: white;
 }
 
 .totalBalance{
@@ -14,16 +20,25 @@
 }
 
 .totalIncome{
-    background-color: rgb(212, 240, 171);
+    // background-color: #913CF3;
+    background-image: linear-gradient(202deg, #913CF3, #7B30FA);
     padding: 20px;
 }
 
 .totalExpense{
-    background-color: rgb(224, 176, 176);
+    // background-color: #FF603C;
+    background-image: linear-gradient(202deg, #FF603C, #FF6F39);
     padding: 20px;
 }
 
 .totalSavings{
-    background-color: rgba(235, 176, 50, 0.959);
+    // background-color: #32334C;
+    background-image: linear-gradient(202deg,  #32334C, rgb(79, 81, 117));
     padding: 20px;
+}
+
+.slider{
+    width: 100%;
+    height: 100%;
+    margin: 30px 0;
 }

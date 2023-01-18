@@ -7,8 +7,9 @@ import dayjs from 'dayjs';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { toast } from 'react-toastify';
+import {ModalProps} from '../../types/index'
 
-const AddExpense = () => {
+const AddExpense = (props: ModalProps) => {
 
   const dispatch = useDispatch();
   const history = useSelector((state: any)=> state.persistedReducer.history)
@@ -17,7 +18,7 @@ const AddExpense = () => {
   const exchangeRates = useSelector((state: any)=> state.persistedReducer.exchangeRates)
   const currency = useSelector((state: any)=> state.persistedReducer.currency)
   const [dateTime, setDateTime] = useState(dayjs().format('ddd, MMMM D, YYYY h:mm A'))
-  const [openModal, setOpenModal] = useState(false)
+  //const [openModal, setOpenModal] = useState(false)
   const [formData, setFormData] = useState({
     type: 'expense',
     title: '',
@@ -27,9 +28,6 @@ const AddExpense = () => {
     currency: currency
   });
 
-  const handleOpenModal = () =>{
-    setOpenModal(state=> !state)
-  }
 
   const handleDateChange =(e: any) =>{
     setDateTime(e.format('ddd, MMMM D, YYYY h:mm A'))
@@ -57,7 +55,7 @@ const AddExpense = () => {
     dispatch(setHistory(tempHistory))
     dispatch(setExpense(tempExpense))
     dispatch(setBalance(tempBalance))
-    handleOpenModal()
+    props.close()
 
     toast.success('Expense added', {
       position: "bottom-right",
@@ -74,9 +72,9 @@ const AddExpense = () => {
   
   return (
     <div>
-      <Button variant='contained' color='primary' onClick={handleOpenModal}>Add Expense</Button>
-      <Dialog open={openModal} onClose={handleOpenModal}>
-        <DialogTitle>Edit Data</DialogTitle>
+      {/* <Button variant='contained' color='primary' onClick={handleOpenModal}>Add Expense</Button> */}
+      <Dialog open={props.show} onClose={()=> props.close()}>
+        <DialogTitle>Add Expense</DialogTitle>
         <DialogContent>
           <form>
             <FormControl style={{ marginBottom: '30px'}} onChange = {handleChange} fullWidth variant='filled'>
@@ -121,7 +119,7 @@ const AddExpense = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={addHistory} variant="outlined">Save</Button>
-          <Button onClick={handleOpenModal} variant="outlined">Cancel</Button>
+          <Button onClick={()=> props.close()} variant="outlined">Cancel</Button>
         </DialogActions>
       </Dialog>
     </div>

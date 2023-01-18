@@ -1,76 +1,78 @@
-import { Button, FilledInput, FormControl, InputLabel, Select,MenuItem, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
-import React, { useState } from 'react'
-import { setBalance, setHistory, setIncome } from '../../store/Tracker';
-import { useDispatch, useSelector } from 'react-redux';
-import dayjs from 'dayjs';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { ToastContainer, toast } from 'react-toastify';
+import {
+  Button,
+  FilledInput,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import React, { useState } from "react";
+import { setBalance, setHistory, setIncome } from "../../store/Tracker";
+import { useDispatch, useSelector } from "react-redux";
+import dayjs from "dayjs";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { ToastContainer, toast } from "react-toastify";
+import { ModalProps } from "../../types/index";
 
-
-const AddIncome = () => {
+const AddIncome = (props: ModalProps) => {
   const dispatch = useDispatch();
 
-  const history = useSelector((state: any)=> state.persistedReducer.history)
-  const income = useSelector((state: any)=> state.persistedReducer.income)
-  const balance = useSelector((state: any)=> state.persistedReducer.balance)
-  const exchangeRates = useSelector((state: any)=> state.persistedReducer.exchangeRates)
-  const currency = useSelector((state: any)=> state.persistedReducer.currency)
-  const [dateTime, setDateTime] = useState(dayjs().format('ddd, MMMM D, YYYY h:mm A'))
-  const [openModal, setOpenModal] = useState(false)
+  const history = useSelector((state: any) => state.persistedReducer.history);
+  const income = useSelector((state: any) => state.persistedReducer.income);
+  const balance = useSelector((state: any) => state.persistedReducer.balance);
+  const exchangeRates = useSelector(
+    (state: any) => state.persistedReducer.exchangeRates
+  );
+  const currency = useSelector((state: any) => state.persistedReducer.currency);
+  const [dateTime, setDateTime] = useState(
+    dayjs().format("ddd, MMMM D, YYYY h:mm A")
+  );
   const [formData, setFormData] = useState({
-    type: 'income',
-    title: '',
-    amount: '' || '0',
-    category: '',
+    type: "income",
+    title: "",
+    amount: "" || "0",
+    category: "",
     timeAdded: dateTime,
-    currency
+    currency,
   });
 
-  const handleOpenModal = () =>{
-    setOpenModal(state=> !state)
-  }
+  const handleDateChange = (e: any) => {
+    setDateTime(e.format("ddd, MMMM D, YYYY h:mm A"));
+    setFormData({
+      ...formData,
+      ["timeAdded"]: e.format("ddd, MMMM D, YYYY h:mm A"),
+    });
+  };
 
-  const handleDateChange =(e: any) =>{
-    setDateTime(e.format('ddd, MMMM D, YYYY h:mm A'))
-    setFormData({ ...formData, ["timeAdded"]: e.format('ddd, MMMM D, YYYY h:mm A')})
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
-    if(e.target.name === 'amount'){
-      const amount = (parseFloat(e.target.value) / exchangeRates[currency]).toFixed(2)
-      setFormData({ ...formData, [e.target.name]: amount})
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "amount") {
+      const amount = (
+        parseFloat(e.target.value) / exchangeRates[currency]
+      ).toFixed(2);
+      setFormData({ ...formData, [e.target.name]: amount });
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
     }
-    else{
-      setFormData({ ...formData, [e.target.name]: e.target.value})
-    }
-  }
+  };
 
-  const addHistory = () =>{
-    console.log("FormData:", formData)
-
-    // const amount = (parseFloat(formData.amount) / exchangeRates[currency]).toFixed(2)
-    // setFormData({ ...formData, amount: amount})
+  const addHistory = () => {
+    console.log("FormData:", formData);
 
     const tempHistory = [...history, formData];
-    const tempIncome = (parseFloat(income) + parseFloat((formData.amount)))
-    // console.log("tempIncome:", amount)
-    // setFormData({ ...formData, amount: amount})
-    // console.log("tempIncome:", formData)
-    const tempBalance = (parseFloat(balance) + parseFloat(formData.amount))
-    dispatch(setHistory(tempHistory))
-    dispatch(setIncome(tempIncome))
-    dispatch(setBalance(tempBalance))
-    handleOpenModal()
+    const tempIncome = parseFloat(income) + parseFloat(formData.amount);
+    const tempBalance = parseFloat(balance) + parseFloat(formData.amount);
+    dispatch(setHistory(tempHistory));
+    dispatch(setIncome(tempIncome));
+    dispatch(setBalance(tempBalance));
+    props.close();
 
-    // setFormData({
-    //   id: uuidv4(),
-    //   type: 'income',
-    //   text: '',
-    //   amount: ''
-    // })
-
-    toast.success('Income added', {
+    toast.success("Income added", {
       position: "bottom-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -80,31 +82,33 @@ const AddIncome = () => {
       progress: undefined,
       theme: "light",
     });
-  }
-
-  
+  };
 
   return (
     <div>
-      <Button variant='contained' color='primary' onClick={handleOpenModal}>Add Income</Button>
-      <Dialog open={openModal} onClose={handleOpenModal}>
-        <DialogTitle>Edit Data</DialogTitle>
+      <Dialog open={props.show} onClose={() => props.close()}>
+        <DialogTitle>Add Income</DialogTitle>
         <DialogContent>
           <form>
-            <FormControl style={{ marginBottom: '30px'}} onChange = {handleChange} fullWidth variant='filled'>
-                <InputLabel>Title</InputLabel>
-                <FilledInput name='title' margin='dense' type='text'/>
+            <FormControl
+              style={{ marginBottom: "30px" }}
+              onChange={handleChange}
+              fullWidth
+              variant="filled"
+            >
+              <InputLabel>Title</InputLabel>
+              <FilledInput name="title" margin="dense" type="text" />
             </FormControl>
 
-            <FormControl style={{ marginBottom: '30px'}} fullWidth>
+            <FormControl style={{ marginBottom: "30px" }} fullWidth>
               <InputLabel id="demo-simple-select-label">Category</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 //value={age}
                 label="Category"
-                name='category'
-                onChange={(e:any) => handleChange(e)}
+                name="category"
+                onChange={(e: any) => handleChange(e)}
               >
                 <MenuItem value={"Salary"}>Salary</MenuItem>
                 <MenuItem value={"Freelancing"}>Freelancing</MenuItem>
@@ -115,12 +119,20 @@ const AddIncome = () => {
               </Select>
             </FormControl>
 
-            <FormControl style={{ marginBottom: '30px'}} onChange = {handleChange} fullWidth variant='filled'>
-                <InputLabel>Amount (in {currency})</InputLabel>
-                <FilledInput name='amount' margin='dense' type='number'/>
+            <FormControl
+              style={{ marginBottom: "30px" }}
+              onChange={handleChange}
+              fullWidth
+              variant="filled"
+            >
+              <InputLabel>Amount (in {currency})</InputLabel>
+              <FilledInput name="amount" margin="dense" type="number" />
             </FormControl>
 
-            <LocalizationProvider style={{ marginBottom: '30px'}} dateAdapter={AdapterDayjs}>
+            <LocalizationProvider
+              style={{ marginBottom: "30px" }}
+              dateAdapter={AdapterDayjs}
+            >
               <DateTimePicker
                 label="TimeAdded"
                 value={dateTime}
@@ -132,7 +144,9 @@ const AddIncome = () => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={addHistory} variant="outlined">Save</Button>
+          <Button onClick={addHistory} variant="outlined">
+            Save
+          </Button>
           <ToastContainer
             position="top-right"
             autoClose={5000}
@@ -145,13 +159,13 @@ const AddIncome = () => {
             pauseOnHover
             theme="light"
           />
-          <Button onClick={handleOpenModal} variant="outlined">Cancel</Button>
+          <Button onClick={() => props.close()} variant="outlined">
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
-
-
     </div>
-  )
-}
+  );
+};
 
-export default AddIncome
+export default AddIncome;

@@ -1,0 +1,31 @@
+.body {
+  margin: 1rem;
+}
+
+.heading {
+  color: green;
+  text-align: center;
+  font: 30px;
+  text-decoration: solid;
+}
+
+.totals,
+.box,
+.head {
+  margin: 1rem;
+  // padding: 50px;
+}
+
+.box {
+  padding: 4rem;
+  background-color: rgb(179, 215, 245);
+  border: 1px solid gray;
+  border-radius: 15px;
+}
+
+.calendar {
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

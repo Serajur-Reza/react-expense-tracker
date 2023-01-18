@@ -1,76 +1,132 @@
-import React, {useCallback, useEffect} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import './styles.scss'
-import { Grid } from '@mui/material'
-import { setBalance, setExpense, setIncome, setSavings } from '../../store/Tracker'
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import "./styles.scss";
+import { Grid } from "@mui/material";
+import History from "../History/index";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/scss";
+import "swiper/scss/navigation";
+import "swiper/scss/pagination";
+import "swiper/css/effect-fade";
+import dayjs from "dayjs";
 
-
+const categories = ["income", "expense", "savings"];
 const Stats = () => {
+  const history = useSelector((state: any) => state.persistedReducer.history);
 
-    const dispatch = useDispatch()
-    const balance = useSelector((state: any) => state.persistedReducer.balance)
-    const income = useSelector((state: any) => state.persistedReducer.income)
-    const expense = useSelector((state: any) => state.persistedReducer.expense)
-    const savings = useSelector((state: any) => state.persistedReducer.savings)
-    const exchangeRate = useSelector((state: any)=> state.persistedReducer.exchange)
-    const exchangeRates = useSelector((state: any)=> state.persistedReducer.exchangeRates)
-    const currency = useSelector((state: any)=> state.persistedReducer.currency)
+  const startDate = useSelector(
+    (state: any) => state.persistedReducer.startDate
+  );
+  const endDate = useSelector((state: any) => state.persistedReducer.endDate);
+  const exchangeRates = useSelector(
+    (state: any) => state.persistedReducer.exchangeRates
+  );
 
-    console.log("income:", typeof income)
+  const currency = useSelector((state: any) => state.persistedReducer.currency);
 
-    useEffect(()=>{
-      const tempBalance = parseFloat(balance) / exchangeRate;
-      const tempIncome = parseFloat(income) / exchangeRate;
-      const tempExpense = parseFloat(expense) / exchangeRate;
-      const tempSavings = parseFloat(savings) / exchangeRate;
+  const [category, setCategory] = useState("income");
+  const [categorySum, setCategorySum] = useState(0);
 
-      console.log("balance: ", balance)
-      console.log("income: ", income)
-      console.log("currentCurrency Stats: ", exchangeRates[currency])
+  const handleCategory = (value: string) => {
+    setCategory(value);
+  };
 
-      // dispatch(setBalance(tempBalance))
-      // dispatch(setIncome(tempIncome))
-      // dispatch(setExpense(tempExpense))
-      // dispatch(setSavings(tempSavings))
+  useEffect(() => {
+    const categoryHistory = history.filter(
+      (item: any) =>
+        item.type === category &&
+        dayjs(dayjs(item.timeAdded).format("DD/MMMM/YYYY")).isBetween(
+          startDate,
+          endDate,
+          "day",
+          "[]"
+        )
+    );
 
-    },[exchangeRate])
-    
+    let sum = 0;
+    for (let i = 0; i < categoryHistory.length; i++) {
+      sum = sum + parseFloat(categoryHistory[i].amount);
+    }
+    console.log("Category Sum:", sum);
+    setCategorySum(sum);
+  }, [category, startDate, endDate, history.length]);
 
-    return (
-      
-      <div className='stats'>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={6} lg={3}>
-          <div className='totalBalance'>
-            <h1>Total Balance: {(parseFloat(balance) * exchangeRates[currency]).toFixed(2)}</h1>
+  return (
+    <div>
+      <Swiper
+        slidesPerView={1.2}
+        spaceBetween={20}
+        centeredSlides={false}
+        pagination={{
+          clickable: true,
+        }}
+        className="slider"
+        onSlideChange={(swiperCore) => {
+          handleCategory(categories[swiperCore.activeIndex]);
+        }}
+      >
+        <SwiperSlide>
+          <div className="totalIncome">
+            <h1>Total Income</h1>
+            {category === "income" ? (
+              <h3>
+                {(parseFloat(categorySum) * exchangeRates[currency]).toFixed(2)}{" "}
+                {currency}
+              </h3>
+            ) : (
+              <h3>
+                0.00
+                {currency}
+              </h3>
+            )}
           </div>
-            
-          </Grid>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="totalExpense">
+            <h1>Total Expense</h1>
+            <h3>
+              {category === "expense" ? (
+                <h3>
+                  {(parseFloat(categorySum) * exchangeRates[currency]).toFixed(
+                    2
+                  )}{" "}
+                  {currency}
+                </h3>
+              ) : (
+                <h3>
+                  0.00
+                  {currency}
+                </h3>
+              )}
+            </h3>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="totalSavings">
+            <h1>Total Savings</h1>
+            <h3>
+              {category === "savings" ? (
+                <h3>
+                  {(parseFloat(categorySum) * exchangeRates[currency]).toFixed(
+                    2
+                  )}{" "}
+                  {currency}
+                </h3>
+              ) : (
+                <h3>
+                  0.00
+                  {currency}
+                </h3>
+              )}
+            </h3>
+          </div>
+        </SwiperSlide>
+      </Swiper>
+      <Grid container spacing={3}></Grid>
 
-          <Grid item xs={12} sm={12} md={6} lg={3}>
-            <div className='totalIncome'>
-              <h1>Total Income: {(parseFloat(income) * exchangeRates[currency]).toFixed(2)}</h1>
-            </div>
-          </Grid>
+      {category ? <History category={category} /> : null}
+    </div>
+  );
+};
 
-
-          <Grid item xs={12} sm={12} md={6} lg={3}>
-            <div className='totalExpense'>
-              <h1>Total Expense: {(parseFloat(expense) * exchangeRates[currency]).toFixed(2)}</h1>
-            </div>
-            
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={6} lg={3}>
-            <div className='totalSavings'>
-              <h1>Total savings: {(parseFloat(savings) * exchangeRates[currency]).toFixed(2)}</h1>
-            </div>
-            
-          </Grid>
-        </Grid>
-      </div>
-    )
-}
-
-export default Stats
+export default Stats;
