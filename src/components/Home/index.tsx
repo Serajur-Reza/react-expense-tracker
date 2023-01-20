@@ -18,6 +18,7 @@ const Home = () => {
   console.log("state=========:", state);
 
   const history = useSelector((state: any) => state.persistedReducer.history);
+  const currency = useSelector((state: any) => state.persistedReducer.currency);
 
   const dispatch = useDispatch();
 
@@ -27,7 +28,7 @@ const Home = () => {
   const exchangeDate = useSelector(
     (state: any) => state.persistedReducer.exchangeDate
   );
-  const [currentCurrency, setCurrentCurrency] = useState("BDT");
+  const [currentCurrency, setCurrentCurrency] = useState(currency);
 
   const calculate = useCallback(() => {
     if (history && history.length) {
@@ -59,7 +60,7 @@ const Home = () => {
   }, [dispatch]);
   const [trigger, result] = useLazyGetCurrencyConversionRateQuery();
 
-  const handleChange = async (e: any) => {
+  const handleChange = (e: any) => {
     setCurrentCurrency(e.target.value);
   };
 

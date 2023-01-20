@@ -1,16 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import {
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { FormControl, Grid, MenuItem, Select } from "@mui/material";
 import "./styles.scss";
 import { setEndDate, setSelectedDate, setStartDate } from "../../store/Tracker";
 import { useDispatch } from "react-redux";
+import * as isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween);
 
 const monthsArray = [
   "January",
@@ -220,16 +215,17 @@ const Calendar = () => {
       <Grid container>
         <Grid item xs={12} justifyContent={"space-between"}>
           <div className="weekButtons">
-            <Button variant="outlined" onClick={previousHandler}>
+            <a onClick={previousHandler} className="icon">
               {"<"}
-            </Button>
+            </a>
             <FormControl
               style={{
                 width: "50%",
+                marginTop: "5px",
               }}
             >
-              <InputLabel id="demo-simple-select-label">Views</InputLabel>
               <Select
+                variant="standard"
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={view}
@@ -242,9 +238,9 @@ const Calendar = () => {
               </Select>
             </FormControl>
 
-            <Button variant="outlined" onClick={nextHandler}>
+            <a onClick={nextHandler} className="icon">
               {">"}
-            </Button>
+            </a>
           </div>
         </Grid>
         {view === "WeekView" ? (

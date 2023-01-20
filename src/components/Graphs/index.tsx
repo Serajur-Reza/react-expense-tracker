@@ -1,19 +1,23 @@
-import React from 'react';
-import MonthView from './MonthView/index';
-import ExpenseView from './ExpenseView/index';
-import './styles.scss'
-import IncomeView from './IncomeView/index';
-import SavingsView from './SavingsView';
+import React from "react";
+import "./styles.scss";
+import { useSelector } from "react-redux";
+
+const MonthView = React.lazy(() => import("./MonthView/index"));
+const ExpenseView = React.lazy(() => import("./ExpenseView/index"));
+const IncomeView = React.lazy(() => import("./IncomeView/index"));
+const SavingsView = React.lazy(() => import("./SavingsView/index"));
 
 const Graphs = () => {
-    return (
-        <div className='body'>
-           <MonthView />
-           <ExpenseView />
-           <IncomeView />
-           <SavingsView />
-        </div>
-    );
+  const state = useSelector((state: any) => state);
+  console.log("state:", state);
+  return (
+    <div>
+      <MonthView />
+      <ExpenseView />
+      <IncomeView />
+      <SavingsView />
+    </div>
+  );
 };
 
 export default Graphs;

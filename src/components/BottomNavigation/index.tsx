@@ -8,16 +8,20 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import React from "react";
+import React, { Suspense } from "react";
 import FolderIcon from "@mui/icons-material/Folder";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import "./styles.scss";
-import AddIncome from "../AddIncome";
-import AddExpense from "../AddExpense";
-import AddSavings from "../AddSavings/index";
+// import AddIncome from "../AddIncome";
+// import AddExpense from "../AddExpense";
+// import AddSavings from "../AddSavings/index";
+import { useNavigate } from "react-router-dom";
+const AddIncome = React.lazy(() => import("../AddIncome"));
+const AddExpense = React.lazy(() => import("../AddExpense"));
+const AddSavings = React.lazy(() => import("../AddSavings"));
 
 const BottomNav = () => {
   const [open, setOpen] = React.useState(false);
@@ -26,13 +30,15 @@ const BottomNav = () => {
   const [openModal2, setOpenModal2] = React.useState(false);
   const [openModal3, setOpenModal3] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    console.log("OPen_______", open);
-    setOpen((state) => !state);
+  const navigate = useNavigate();
+
+  const handleDrawer = (openValue: boolean) => {
+    console.log("open______:", open);
+    setOpen(openValue);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleRoute = (route: any) => {
+    navigate(route);
   };
 
   const style = {
@@ -47,10 +53,14 @@ const BottomNav = () => {
         style={{
           backgroundColor: "gray",
           width: "600px",
-          // position: "fixed",
           bottom: 0,
         }}
         value={value}
+        onChange={(event, newValue) => {
+          if (newValue !== "drawer") {
+            setValue(newValue);
+          }
+        }}
       >
         <BottomNavigationAction
           value="home"
@@ -62,26 +72,38 @@ const BottomNav = () => {
               color: "green",
             },
           }}
+          onClick={(e: any) => handleRoute("/")}
         />
-        <BottomNavigationAction value="folder" icon={<FolderIcon />} />
         <BottomNavigationAction
+          value="folder"
+          icon={<FolderIcon />}
+          onClick={(e: any) => handleRoute("/graph")}
+        />
+        <BottomNavigationAction
+          value="drawer"
           icon={<ControlPointIcon />}
-          onClick={handleDrawerOpen}
+          onClick={(e) => {
+            handleDrawer(true);
+          }}
           style={{ background: "orange", color: "white" }}
         />
         <BottomNavigationAction value="calendar" icon={<CalendarMonthIcon />} />
-        <BottomNavigationAction value="person" icon={<PersonIcon />} />
+        <BottomNavigationAction
+          value="person"
+          icon={<PersonIcon />}
+          onClick={(e: any) => handleRoute("/settings")}
+        ></BottomNavigationAction>
       </BottomNavigation>
 
       <ClickAwayListener
         mouseEvent="onMouseDown"
         touchEvent="onTouchStart"
-        onClickAway={() => handleDrawerClose()}
+        onClickAway={(e) => handleDrawer(false)}
       >
         <Drawer
-          variant="persistent"
           open={open}
           anchor="bottom"
+          onClose={() => handleDrawer(false)}
           sx={{
             "& .MuiPaper-root": {
               width: 600,
@@ -90,23 +112,21 @@ const BottomNav = () => {
           }}
         >
           <List sx={style} component="nav" aria-label="mailbox folders">
-            <ListItem button>
+            <ListItem button style={{ width: 600 }}>
               <ListItemText
                 primary="Add Income"
                 onClick={() => {
                   setOpenModal1(true);
-                  handleDrawerClose();
                 }}
               />
               <AddIncome show={openModal1} close={() => setOpenModal1(false)} />
             </ListItem>
-            <Divider />
-            <ListItem button divider>
+            <Divider style={{ width: 600 }} />
+            <ListItem button divider style={{ width: 600 }}>
               <ListItemText
                 primary="Add Expense"
                 onClick={() => {
                   setOpenModal2(true);
-                  handleDrawerClose();
                 }}
               />
 
@@ -115,12 +135,11 @@ const BottomNav = () => {
                 close={() => setOpenModal2(false)}
               />
             </ListItem>
-            <ListItem button>
+            <ListItem button style={{ width: 600 }}>
               <ListItemText
                 primary="Add Savings"
                 onClick={() => {
                   setOpenModal3(true);
-                  handleDrawerClose();
                 }}
               />
               <AddSavings

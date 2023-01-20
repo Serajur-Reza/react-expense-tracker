@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./styles.scss";
 import { Grid } from "@mui/material";
-import History from "../History/index";
+// import History from "../History/index";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss";
 import "swiper/scss/navigation";
 import "swiper/scss/pagination";
 import "swiper/css/effect-fade";
 import dayjs from "dayjs";
+
+const History = React.lazy(() => import("../History/index"));
 
 const categories = ["income", "expense", "savings"];
 const Stats = () => {
@@ -70,7 +72,9 @@ const Stats = () => {
             <h1>Total Income</h1>
             {category === "income" ? (
               <h3>
-                {(parseFloat(categorySum) * exchangeRates[currency]).toFixed(2)}{" "}
+                {(
+                  parseFloat(categorySum.toFixed(0)) * exchangeRates[currency]
+                ).toFixed(2)}{" "}
                 {currency}
               </h3>
             ) : (
@@ -87,9 +91,9 @@ const Stats = () => {
             <h3>
               {category === "expense" ? (
                 <h3>
-                  {(parseFloat(categorySum) * exchangeRates[currency]).toFixed(
-                    2
-                  )}{" "}
+                  {(
+                    parseFloat(categorySum.toFixed(0)) * exchangeRates[currency]
+                  ).toFixed(2)}{" "}
                   {currency}
                 </h3>
               ) : (
@@ -107,9 +111,9 @@ const Stats = () => {
             <h3>
               {category === "savings" ? (
                 <h3>
-                  {(parseFloat(categorySum) * exchangeRates[currency]).toFixed(
-                    2
-                  )}{" "}
+                  {(
+                    parseFloat(categorySum.toFixed(0)) * exchangeRates[currency]
+                  ).toFixed(2)}{" "}
                   {currency}
                 </h3>
               ) : (
