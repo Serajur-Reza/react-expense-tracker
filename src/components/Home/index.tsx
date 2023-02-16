@@ -1,16 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import "./styles.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { FormControl, Grid, InputLabel, Select, MenuItem } from "@mui/material";
-import {
-  setCurrency,
-  setExchangeDate,
-  setExchangeRates,
-} from "../../store/Tracker";
+import { Grid } from "@mui/material";
+import { setExchangeDate, setExchangeRates } from "../../store/Tracker";
 import { useLazyGetCurrencyConversionRateQuery } from "../../store/api";
 import Stats from "../Stats";
 import dayjs from "dayjs";
-import "react-calendar/dist/Calendar.css";
 import Calendar from "../Calendar/index";
 
 const Home = () => {
@@ -28,7 +23,7 @@ const Home = () => {
   const exchangeDate = useSelector(
     (state: any) => state.persistedReducer.exchangeDate
   );
-  const [currentCurrency, setCurrentCurrency] = useState(currency);
+  // const [currentCurrency, setCurrentCurrency] = useState(currency);
 
   const calculate = useCallback(() => {
     if (history && history.length) {
@@ -38,13 +33,12 @@ const Home = () => {
       );
 
       let allIncome = 0,
-        allExpense = 0,
-        tempBalance = 0;
-      if (incomeData && incomeData.length) {
+        allExpense = 0;
+       if (incomeData && incomeData.length) {
         for (let i = 0; i < incomeData.length; i++) {
           allIncome =
             parseFloat(allIncome.toFixed(0)) +
-            parseFloat(incomeData[i].amount) / exchangeRates[currentCurrency];
+            parseFloat(incomeData[i].amount) / exchangeRates[currency];
         }
       }
 
@@ -52,17 +46,12 @@ const Home = () => {
         for (let i = 0; i < expenseData.length; i++) {
           allExpense =
             parseFloat(allExpense.toFixed(0)) +
-            parseFloat(expenseData[i].amount) / exchangeRates?.currentCurrency;
+            parseFloat(expenseData[i].amount) / exchangeRates?.currency;
         }
       }
-      tempBalance = allIncome - allExpense;
     }
   }, [dispatch]);
   const [trigger, result] = useLazyGetCurrencyConversionRateQuery();
-
-  const handleChange = (e: any) => {
-    setCurrentCurrency(e.target.value);
-  };
 
   useEffect(() => {
     const date = dayjs();
@@ -75,11 +64,6 @@ const Home = () => {
     }
     calculate();
   }, [calculate]);
-
-  useEffect(() => {
-    dispatch(setCurrency(currentCurrency));
-    //trigger(["USD", "EUR"])
-  }, [currentCurrency]);
 
   useEffect(() => {
     if (result && result?.status === "fulfilled") {
@@ -114,31 +98,6 @@ const Home = () => {
           <div className="calendar">
             <Calendar />
           </div>
-        </Grid>
-
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <FormControl
-            style={{
-              marginBottom: "30px",
-              marginTop: "30px",
-              width: "90%",
-              marginLeft: "30px",
-            }}
-          >
-            <InputLabel id="demo-simple-select-label">Category</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={currentCurrency}
-              label="Category"
-              name="category"
-              onChange={handleChange}
-            >
-              <MenuItem value={"BDT"}>BDT</MenuItem>
-              <MenuItem value={"USD"}>USD</MenuItem>
-              <MenuItem value={"EUR"}>EUR</MenuItem>
-            </Select>
-          </FormControl>
         </Grid>
       </Grid>
 

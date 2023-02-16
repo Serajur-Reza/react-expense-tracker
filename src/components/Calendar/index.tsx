@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { FormControl, Grid, MenuItem, Select } from "@mui/material";
 import "./styles.scss";
-import { setEndDate, setSelectedDate, setStartDate } from "../../store/Tracker";
+import { setEndDate, setStartDate } from "../../store/Tracker";
 import { useDispatch } from "react-redux";
 import * as isBetween from "dayjs/plugin/isBetween";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 dayjs.extend(isBetween);
 
 const monthsArray = [
@@ -169,13 +171,22 @@ const Calendar = () => {
         <div className="weekdays">
           {days && days.length
             ? days.map((item, index) => (
-                <div
-                  className={`day ${item.date === selected ? "today" : ""}`}
-                  key={index}
-                  onClick={(e: any) => handleDate(e, item)}
-                >
-                  <h3>{item.day}</h3>
-                  <h3>{item.dateNum}</h3>
+                <div key={index}>
+                  <div style={{ paddingBottom: "10px" }}>
+                    <h3>{item.day}</h3>
+                  </div>
+
+                  <div
+                    className={`day ${item.date === selected ? "today" : ""}`}
+                    onClick={(e: any) => handleDate(e, item)}
+                  >
+                    <h3>
+                      {item.dateNum}
+                      {/* <br />
+                      {item.date === selected ? "." : ""} */}
+                    </h3>
+                    {/* <p>{item.date === selected ? "." : ""}</p> */}
+                  </div>
                 </div>
               ))
             : null}
@@ -216,15 +227,17 @@ const Calendar = () => {
         <Grid item xs={12} justifyContent={"space-between"}>
           <div className="weekButtons">
             <a onClick={previousHandler} className="icon">
-              {"<"}
+              <ArrowBackIosIcon />
             </a>
             <FormControl
               style={{
                 width: "50%",
-                marginTop: "5px",
+                // marginTop: "5px",
+                // padding: "15px",
               }}
             >
               <Select
+                className="selectMenu"
                 variant="standard"
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -239,7 +252,7 @@ const Calendar = () => {
             </FormControl>
 
             <a onClick={nextHandler} className="icon">
-              {">"}
+              <ArrowForwardIosIcon />
             </a>
           </div>
         </Grid>

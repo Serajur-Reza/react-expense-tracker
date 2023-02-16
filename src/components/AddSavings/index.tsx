@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
 import { setHistory, setSavings } from "../../store/Tracker";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -24,12 +23,10 @@ import { ModalProps } from "../../types/index";
 const AddSavings = (props: ModalProps) => {
   const dispatch = useDispatch();
   const history = useSelector((state: any) => state.persistedReducer.history);
-  // const expense = useSelector((state: any)=> state.persistedReducer.expense)
   const exchangeRates = useSelector(
     (state: any) => state.persistedReducer.exchangeRates
   );
   const currency = useSelector((state: any) => state.persistedReducer.currency);
-  const balance = useSelector((state: any) => state.persistedReducer.balance);
   const savings = useSelector((state: any) => state.persistedReducer.savings);
   const [dateTime, setDateTime] = useState(
     dayjs().format("ddd, MMMM D, YYYY h:mm A")
@@ -43,10 +40,6 @@ const AddSavings = (props: ModalProps) => {
     timeAdded: dateTime,
     currency,
   });
-
-  // const handleOpenModal = () => {
-  //   props.setOpenModal((state: any) => !state);
-  // };
 
   const handleDateChange = (e: any) => {
     setDateTime(e.format("ddd, MMMM D, YYYY h:mm A"));

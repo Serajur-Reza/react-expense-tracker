@@ -9,6 +9,7 @@ import "swiper/scss/navigation";
 import "swiper/scss/pagination";
 import "swiper/css/effect-fade";
 import dayjs from "dayjs";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const History = React.lazy(() => import("../History/index"));
 
@@ -75,12 +76,12 @@ const Stats = () => {
                 {(
                   parseFloat(categorySum.toFixed(0)) * exchangeRates[currency]
                 ).toFixed(2)}{" "}
-                {currency}
+                {getSymbolFromCurrency(currency)}
               </h3>
             ) : (
               <h3>
                 0.00
-                {currency}
+                {getSymbolFromCurrency(currency)}
               </h3>
             )}
           </div>
@@ -94,12 +95,12 @@ const Stats = () => {
                   {(
                     parseFloat(categorySum.toFixed(0)) * exchangeRates[currency]
                   ).toFixed(2)}{" "}
-                  {currency}
+                  {getSymbolFromCurrency(currency)}
                 </h3>
               ) : (
                 <h3>
                   0.00
-                  {currency}
+                  {getSymbolFromCurrency(currency)}
                 </h3>
               )}
             </h3>
@@ -114,12 +115,12 @@ const Stats = () => {
                   {(
                     parseFloat(categorySum.toFixed(0)) * exchangeRates[currency]
                   ).toFixed(2)}{" "}
-                  {currency}
+                  {getSymbolFromCurrency(currency)}
                 </h3>
               ) : (
                 <h3>
                   0.00
-                  {currency}
+                  {getSymbolFromCurrency(currency)}
                 </h3>
               )}
             </h3>
